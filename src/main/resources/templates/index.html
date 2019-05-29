@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+
+<div ng-app="myFristApp" ng-controller="myCtrl" >
+    <h3>[root-data]</h3>
+    {{ rootData }}<br>
+
+    <h3>[ng-model]</h3>
+    First Name : <input type="text" ng-model="firstName"><br>
+    Last Name : <input type="text" ng-model="lastName"><br>
+    Full Name : {{ fullName() }}
+
+    <h3>[ng-show]</h3>
+    <form ng-app="" name="myApp">
+        Email : <input type="email" name="address" ng-model="text"><br>  <!-- number, e-mail, required -->
+        <div ng-show="myApp.address.$error.email">Invalide Email Formet</div>
+    </form>
+    </pl>
+
+    <h3>[ng-repeat]</h3>
+    <ul>
+        <li ng-repeat = "ad in arrayData">{{ ad }}</li>
+    </ul>
+    </pl>
+
+    <h3>[directive]</h3>
+    <w3-test-directive></w3-test-directive>
+
+    </pl>
+    <h3>[Filter And Ordering]</h3>
+    <table border="1" width="100%">
+        <tr>
+            <th ng-click="orderByMe('name')">Name</th>
+            <th ng-click="orderByMe('country')">Country</th>
+        </tr>
+        <tr ng-repeat="x in names | orderBy:myOrderBy">
+            <td>{{x.name}}</td>
+            <td>{{x.country}}</td>
+        </tr>
+    </table>
+
+    <h3>[Custom Filter]</h3>
+    <li ng-repeat="x in names2">
+        {{x | myFormat}}
+    </li>
+
+    <h3>[Http Call]</h3>
+    {{ httpData }}
+
+    <h3>[Select]</h3>
+    <select ng-model="selectedCar" ng-options="x.model for x in cars">
+    </select>
+
+    <h1>You selected: {{selectedCar.model}}</h1>
+    <p>Its color is: {{selectedCar.color}}</p>
+
+</div>
+
+<script>
+    var app = angular.module('myFristApp', []);
+    app.config(['$qProvider', function ($qProvider) {
+        $qProvider.errorOnUnhandledRejections(false);
+    }]);
+
+
+    app.run(function($rootScope) {
+        $rootScope.rootData = 'rootData';
+    });
+
+    app.filter('myFormat', function() {
+        return function(x) {
+            var i, c, txt = "";
+            for (i = 0; i < x.length; i++) {
+                c = x[i];
+                if (i % 2 == 0) {
+                    c = c.toUpperCase();
+                }
+                txt += c;
+            }
+            return txt;
+        };
+    });
+
+    app.controller('myCtrl', function($scope, $http){
+        $scope.firstName = "Jimin";
+        $scope.lastName = "Song";
+        $scope.arrayData = [1, 2, 3, 4, 5];
+        $scope.fullName = function() {
+            return $scope.firstName + " " + $scope.lastName;
+        };
+        $scope.names = [
+            {name:'Jani',country:'Norway'},
+            {name:'Carl',country:'Sweden'},
+            {name:'Margareth',country:'England'},
+            {name:'Hege',country:'Norway'},
+            {name:'Joe',country:'Denmark'},
+            {name:'Gustav',country:'Sweden'},
+            {name:'Birgit',country:'Denmark'},
+            {name:'Mary',country:'England'},
+            {name:'Kai',country:'Norway'}
+        ];
+        $scope.orderByMe = function(x) {
+            $scope.myOrderBy = x;
+        }
+
+        $scope.names2 = ['Jani', 'Carl', 'Margareth', 'Hege', 'Joe', 'Gustav', 'Birgit', 'Mary', 'Kai'];
+
+        $http({
+            method: "GET",
+            url: "/getPersons"
+        }).then(function(response) {
+            $scope.httpData = response.data;
+        }, function(response) {
+            // Second function handles error
+            $scope.httpData = "Something went wrong";
+        });
+
+        $scope.cars = [
+            {model : "Ford Mustang", color : "red"},
+            {model : "Fiat 500", color : "white"},
+            {model : "Volvo XC90", color : "black"}
+        ];
+
+
+    })
+    app.directive("w3TestDirective", function() {
+        return {
+            template : "<h1>Made by a directive!</h1>"
+        };
+    });
+
+
+</script>
+</body>
+</html>
