@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="utf-8" ng-app="angualrEvent">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+    <h1>Angualr Event Test Page</h1>
+    <h3>[Mouse Event]</h3>
+    <div ng-controller="eventController">
+        <button ng-click="count = count + 1">mouse click!</button>
+        <hj2>{{ count }}</hj2>
+    </div>
+
+    <h3>[Required Validation]</h3>
+    <form name="myForm">
+        <input name="myInput" ng-model="myInput" required>
+    </form>
+    <p>The input's valid state is:</p>
+    <h1>{{myForm.myInput.$valid}}</h1>
+
+
+    <div ng-controller="addOrRemoveController">
+        <h3>[Add or Remove Item]</h3>
+        <ul>
+            <li ng-repeat="x in products">{{x}}<span ng-click="removeItem($index)"> x</span></li>
+        </ul>
+        <input ng-model="item"/>
+        <button ng-click="addItem()">Add Button</button>
+    </div>
+
+
+<script>
+    var app2 = angular.module('angualrEvent', []);
+
+    app2.controller('eventController', function($scope) {
+        $scope.count = 0;
+    })
+
+    app2.controller('addOrRemoveController', function($scope) {
+        $scope.products = ["Milk", "Bread", "Cheese"];
+        $scope.addItem = function() {
+            $scope.products.push($scope.item);
+        }
+        $scope.removeItem = function (x) {
+            $scope.products.splice(x, 1);
+        }
+
+    })
+
+</script>
+</body>
+</html>
